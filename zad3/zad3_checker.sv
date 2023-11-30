@@ -72,17 +72,28 @@ checker zad3_checker (
 		end
 	end
 
-	assert property ((ENDD1 or RDY1 or START1) |-> rt1_s); // zad1	
-	assert property (ER2 |-> ##[1:3] !ER2); //zad2
-	assert property ((ER3 and RDY3) |=> !(ER3 & RDY3)); //zad3 
-	assert property (RDY4 |-> start4_s); //zad4 
-	assert property ((ENDD5 or STOP5 or ER5) |=> !RDY5); //zad5 
-	assert property ((ENDD6 or STOP6 or ER6) |-> RDY6); //zad6 
-	assert property (ENDD7 |-> !(START7 & STATUS_VALID7)); //zad7 
-	assert property (RT8 |-> !ENABLE8); //zad8_1 
-	assert property ($fell(RT8) |-> !ENABLE8[*2]); //zad8_2	
-	assert property (($fell(RDY9) or $fell(START9)) |-> (INTERUPT9 | $fell(INTERUPT9))); //zad9
-	assert property (REQ10 |-> ##5 ACK10); //zad10 
+	//zad1
+	assert property ((ENDD1 or RDY1 or START1) |-> rt1_s);
+	//zad2
+	assert property (ER2 |-> ##[1:3] !ER2); 
+	//zad3 
+	assert property ((ER3 and RDY3) |=> !(ER3 & RDY3)); 
+	//zad4
+	assert property (RDY4 |-> start4_s);  
+	//zad5
+	assert property ((ENDD5 or STOP5 or ER5) |=> !RDY5);  
+	//zad6
+	assert property ((ENDD6 or STOP6 or ER6) |-> RDY6);  
+	//zad7 
+	assert property (ENDD7 |-> !(START7 & STATUS_VALID7)); 
+	//zad8a
+	assert property (RT8 |-> !ENABLE8);  
+	//zad8a2
+	assert property ($fell(RT8) |-> !ENABLE8[*2]); 	
+	//zad9
+	assert property (($fell(RDY9) or $fell(START9)) |-> (INTERUPT9 | $fell(INTERUPT9))); 
+	//zad10
+	assert property (REQ10 |-> ##5 ACK10);  
 
 endchecker
 

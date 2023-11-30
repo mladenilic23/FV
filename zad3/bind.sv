@@ -3,7 +3,7 @@ bind zad3 zad3_checker c0(.clk(clk),
 						//zad1:
 						  .RT1(RT1),
    						  .RDY1(RDY1),
-    					  .START1(START1),
+    					  	  .START1(START1),
 						  .ENDD1(ENDD1),
 						//zad2:	
 						  .ER2(ER2),
