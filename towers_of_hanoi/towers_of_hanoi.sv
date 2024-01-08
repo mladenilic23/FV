@@ -63,16 +63,47 @@ module hanoi #(parameter S = 4)
 
     	default disable iff (rst); 
 
+		//Invalid values of fr and to
+		assume_invalid_val:restrict property(fr != 2'b11 && to != 2'b11);
+
 		//A disk from one tower can't be placed on itself
-      	assume_only_valid:restrict property ((fr == 2'b00 && to == 2'b01) | (fr == 2'b00 && to == 2'b10) | 	
-                     				   		 (fr == 2'b01 && to == 2'b00) | (fr == 2'b01 && to == 2'b10) | 				
-				    	 				   	 (fr == 2'b10 && to == 2'b00) | (fr == 2'b10 && to == 2'b01));
+      	assume_only_valid:restrict property((fr == 2'b00 && to == 2'b01) | (fr == 2'b00 && to == 2'b10) | 	
+                     				   		(fr == 2'b01 && to == 2'b00) | (fr == 2'b01 && to == 2'b10) | 				
+				    	 				   	(fr == 2'b10 && to == 2'b00) | (fr == 2'b10 && to == 2'b01));
 
 		//A disk can't be taken from an empty rod
- 		assume_empty_rod0: restrict property(fr == 2'b00 |-> ~(rod0 == 2'b0000));
-    	assume_empty_rod1: restrict property(fr == 2'b01 |-> ~(rod1 == 2'b0000));
-    	assume_empty_rod2: restrict property(fr == 2'b10 |-> ~(rod2 == 2'b0000)); 
-	
+		assume_empty0:restrict property(rod0 == 4'b0000 |=> ~(fr == 2'b00));
+		assume_empty1:restrict property(rod1 == 4'b0000 |=> ~(fr == 2'b01));
+		assume_empty2:restrict property(rod2 == 4'b0000 |=> ~(fr == 2'b10));
+
+		//First move
+		assume_start:restrict property(rod0 == 4'b1111 |-> (fr == 2'b00 && to == 2'b01));
+
+		//It is not possible to move a disc that has just been moved
+		restrict property(to == 2'b00 |=> ~(fr == 2'b00));
+		restrict property(to == 2'b01 |=> ~(fr == 2'b01));
+		restrict property(to == 2'b10 |=> ~(fr == 2'b10));
+
+		//It is not possible to move the discs from one rod to the same other rod twice in a row
+		//From rod0
+		restrict property((fr == 2'b00 && to == 2'b01) |=> ~(fr == 2'b00 && to == 2'b01));
+		restrict property((fr == 2'b00 && to == 2'b10) |=> ~(fr == 2'b00 && to == 2'b10));
+		//From rod1
+		restrict property((fr == 2'b01 && to == 2'b00) |=> ~(fr == 2'b01 && to == 2'b00));
+		restrict property((fr == 2'b01 && to == 2'b10) |=> ~(fr == 2'b01 && to == 2'b10));
+		//From rod2
+		restrict property((fr == 2'b10 && to == 2'b00) |=> ~(fr == 2'b10 && to == 2'b00));
+		restrict property((fr == 2'b10 && to == 2'b01) |=> ~(fr == 2'b10 && to == 2'b01));
+
+		//It is not possible to move discs 3 times in a row FROM the same rod
+		restrict property(fr == 2'b00 [*2] |=> ~(fr == 2'b00));
+		restrict property(fr == 2'b01 [*2] |=> ~(fr == 2'b01));
+		restrict property(fr == 2'b10 [*2] |=> ~(fr == 2'b10));
+
+		//It is not possible to move discs 3 times in a row TO the same rod
+		restrict property(to == 2'b00 [*2] |=> ~(to == 2'b00));
+		restrict property(to == 2'b01 [*2] |=> ~(to == 2'b01));
+		restrict property(to == 2'b10 [*2] |=> ~(to == 2'b10));
 
 		final_cov: cover property (rod0 == 4'b0000 && rod1 == 4'b0000 && rod2 == 4'b1111);					   
 
