@@ -105,6 +105,17 @@ module hanoi #(parameter S = 4)
 		restrict property(to == 2'b01 [*2] |=> ~(to == 2'b01));
 		restrict property(to == 2'b10 [*2] |=> ~(to == 2'b10));
 
-		final_cov: cover property (rod0 == 4'b0000 && rod1 == 4'b0000 && rod2 == 4'b1111);					   
+		//It is not possible to place a disc on the rod from which the previous two discs were removed
+		restrict property(fr == 2'b00 [*2] |=> ~(to == 2'b00));
+		restrict property(fr == 2'b01 [*2] |=> ~(to == 2'b01));
+		restrict property(fr == 2'b10 [*2] |=> ~(to == 2'b10));
+
+		//Until the moment when the largest disk is left alone on rod0 (It doesn't move from there)
+		restrict property((to == 2'b01 ##1 to == 2'b10[*2] ##1 to == 2'b01) |=> to == 2'b00);
+
+		//This restriction refers to the cycle after the previous restriction
+		restrict property((to == 2'b01 ##1 to == 2'b10[*2] ##1 to == 2'b01 ##1 to == 2'b00) |=> to == 2'b01);
+
+		final_cov: cover property(rod0 == 4'b0000 && rod1 == 4'b0000 && rod2 == 4'b1111);					   
 
 endmodule
